@@ -1,0 +1,36 @@
+/*
+ ##################################################
+ #
+ # [ onsemiro-utils ] gradle project config
+ #
+ ##################################################
+ */
+
+dependencies {
+
+    //___ compile ___
+
+    // spring boot
+    compile 'org.springframework.boot:spring-boot-starter'
+
+    //commons
+    compile 'commons-codec:commons-codec:1.10'
+    compile 'commons-io:commons-io:2.5'
+    compile 'commons-net:commons-net:3.6'
+    compile 'org.apache.commons:commons-lang3:3.5'
+
+    // jackson-datatype
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.8'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.8.8'
+
+    //___ compileOnly ___
+    compileOnly 'org.projectlombok:lombok'
+
+    //___ testCompile ___
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'org.hamcrest:hamcrest-all:1.3'
+    testCompile 'org.codehaus.groovy:groovy-all:2.4.1'
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    testCompile 'org.spockframework:spock-spring:1.0-groovy-2.4'
+
+}

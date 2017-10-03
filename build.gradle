@@ -1,0 +1,117 @@
+buildscript {
+	ext {
+		springBootVersion = SPRING_BOOT_VER
+	}
+	repositories {
+		maven { url "https://plugins.gradle.org/m2/" }
+		jcenter()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${SPRING_BOOT_VER}")
+		classpath("gradle.plugin.com.boxfuse.client:flyway-release:4.0.3")
+		classpath("io.franzbecker:gradle-lombok:1.8")
+	}
+}
+
+allprojects {
+
+	apply plugin: 'java'
+	apply plugin: 'groovy'
+	apply plugin: 'idea'
+	apply plugin: 'eclipse'
+	apply plugin: 'maven'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'org.flywaydb.flyway'
+	apply plugin: 'io.franzbecker.gradle-lombok'
+
+	/* _____ repo config _____ */
+	repositories {
+		maven {
+			url "${NEXUS_URL}/repository/maven-public/"
+			credentials {
+				username NEXUS_ID
+				password NEXUS_PASSWORD
+			}
+		}
+		jcenter()
+		mavenCentral()
+	}
+
+	/* _____ compiler config _____ */
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+
+	compileJava.dependsOn(processResources)
+
+	compileGroovy {
+		sourceCompatibility = 1.8
+		targetCompatibility = 1.8
+	}
+
+	/* _____ encoding config _____ */
+		[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+		[compileGroovy, compileTestGroovy]*.options*.encoding = 'UTF-8'
+		[compileGroovy, compileTestGroovy]*.groovyOptions*.encoding = 'UTF-8'
+
+
+	/* _____ sourceSets config _____ */
+	sourceSets {
+		test.groovy.srcDirs = ['src/test/groovy']
+
+		main.output.resourcesDir = sourceSets.main.output.classesDir
+		test.output.resourcesDir = sourceSets.test.output.classesDir
+	}
+
+	/*configurations {
+		compile.exclude module: 'slf4j-log4j12'
+		compile.exclude module: 'tomcat-jdbc'
+		compile.exclude module: 'persistence-api'
+	}*/
+
+	javadoc {
+		options.encoding = 'UTF-8'
+	}
+}
+
+/* _____ dependencies config _____ */
+apply from: 'dependencies.gradle'
+
+/* _____ config-test config _____ */
+apply from: 'config-test.gradle'
+
+/* _____ uploadArchives _____ */
+task sourcesJar(type: Jar) {
+	from sourceSets.main.java.srcDirs
+	classifier = "sources"
+}
+
+jar {
+	baseName = 'geronimo-utils'
+	version = JAR_VERSION
+	dependsOn sourcesJar
+}
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			repository(url: "${NEXUS_URL}/repository/maven-releases/") {
+				authentication(userName: NEXUS_ID, password: NEXUS_PASSWORD)
+			}
+			pom.groupId = 'io.geronimo'
+			pom.artifactId = 'geronimo-utils'
+			pom.version = '1.0.1'
+
+			/*pom.project {
+				parent {
+					groupId 'org.springframework.boot'
+					artifactId 'spring-boot-starter-parent'
+					version SPRING_BOOT_VER
+				}
+			}*/
+		}
+	}
+}
+
+artifacts {
+	archives sourcesJar
+}

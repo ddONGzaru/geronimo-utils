@@ -1,0 +1,80 @@
+/*
+ ##################################################
+ #
+ # [ parkstore-app-server ] Gradle Project Config
+ #
+ ##################################################
+ */
+
+
+/* _____ static code analysis plugin _____ */
+apply plugin: 'jacoco'
+apply plugin: 'findbugs'
+apply plugin: 'checkstyle'
+apply plugin: 'pmd'
+apply plugin: 'jdepend'
+
+
+/* _____ test config _____ */
+test {
+    jacoco{
+        excludes = ['kr/re/nsri/aria/**']
+        //includes = ['com/bla/**']
+        append = false
+    }
+}
+
+jacoco{
+    toolVersion = "0.7.9"
+    //toolVersion = "0.7.6.201602180812"
+}
+
+jacocoTestReport {
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: 'com/blah/**')
+        })
+    }
+}
+
+findbugs {
+    ignoreFailures = true
+}
+
+checkstyle {
+    toolVersion ="5.8"
+    //toolVersion ="7.8.2"
+    //configFile = new File(rootDir, 'src/test/resources/checkstyle/google_checks.xml')
+    configFile = new File(rootDir, 'src/test/resources/checkstyle/checkstyle-config.xml')
+    ignoreFailures = true
+}
+
+checkstyleMain.exclude 'kr/re/nsri/aria/**'
+findbugsMain.exclude 'kr/re/nsri/aria/**'
+
+jdepend {
+    sourceSets = [sourceSets.main]
+    ignoreFailures = true
+}
+
+pmd {
+    ruleSetFiles = files("$rootDir/src/test/resources/static/analysis/pmd-rulesets.xml")
+    ignoreFailures = true
+}
+
+pmdMain {
+    reports {
+        xml.enabled true
+        html.enabled false
+    }
+}
+
+test {
+    maxHeapSize = "1024m"
+
+    //exclude 'kr/**'
+    //exclude '**/EasyPayReservationIntegrationTest.class'
+
+    // java 8 버전부터 지원하지 않는 옵션임.
+    //jvmArgs "-XX:MaxPermSize=256m"
+}
