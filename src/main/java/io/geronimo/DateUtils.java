@@ -212,52 +212,70 @@ public final class DateUtils {
     	return LocalDate.of(year, 1, 1).isLeapYear();
     }
     
-	public static LocalDateTime toDateTime(String dateTime, String pattern) {
+	public static LocalDateTime toLocalDateTime(String dateTime, String pattern) {
 
 		if (StringUtils.isEmpty(dateTime)) {
 			return null;
 		}
 
 		if (dateTime.length() == 8) {
-			return DateUtils.toDate(dateTime, "yyyyMMdd").atTime(0, 0, 0);
+			return DateUtils.toLocalDate(dateTime, "yyyyMMdd").atTime(0, 0, 0);
 		}
 
 		if (dateTime.length() == 10) {
-			return DateUtils.toDate(dateTime).atTime(0, 0, 0);
+			return DateUtils.toLocalDate(dateTime).atTime(0, 0, 0);
 		}
 
 		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(pattern);
 		return LocalDateTime.parse(dateTime, formatter);
 	}
 
-	public static LocalDateTime toDateTime(String dateTime) {
-		return toDateTime(dateTime, DATE_TIME_PATTERN);
+	public static LocalDateTime toLocalDateTime(String dateTime) {
+		return toLocalDateTime(dateTime, DATE_TIME_PATTERN);
 	}
 
-	public static LocalDateTime toDateTime(long timeMillis) {
+	public static LocalDateTime toLocalDateTime(long timeMillis) {
 		Date date = new Date(timeMillis);
 		return date.toInstant().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
 	}
 
 	public static Timestamp toTimestamp(String dateTime, String pattern) {
-		return Timestamp.valueOf(toDateTime(dateTime, pattern));
+		return Timestamp.valueOf(toLocalDateTime(dateTime, pattern));
 	}
 
 	public static Timestamp toTimestamp(String dateTime) {
-		return Timestamp.valueOf(toDateTime(dateTime, DATE_TIME_PATTERN));
+		return Timestamp.valueOf(toLocalDateTime(dateTime, DATE_TIME_PATTERN));
 	}
 
 	public static Timestamp toTimestamp(long timeMillis) {
-		return Timestamp.valueOf(toDateTime(timeMillis));
+		return Timestamp.valueOf(toLocalDateTime(timeMillis));
 	}
 
-	public static LocalDate toDate(String date, String pattern) {
+	public static LocalDate toLocalDate(String date, String pattern) {
 		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(pattern);
 		return LocalDate.parse(date, formatter);
 	}
 
-	public static LocalDate toDate(String date) {
-		return toDate(date, DATE_PATTERN_DASH);
+	public static LocalDate toLocalDate(String date) {
+		return toLocalDate(date, DATE_PATTERN_DASH);
+	}
+
+	public static Date toDate(String dateTime, String pattern) {
+		ZonedDateTime zonedDateTime = toLocalDateTime(dateTime, pattern).atZone(ZoneId.of("Asia/Seoul"));
+		return Date.from(zonedDateTime.toInstant());
+	}
+
+	public static Date toDate(String dateTime) {
+    	return toDate(dateTime, DATE_TIME_PATTERN);
+	}
+
+	public static Date toDate(LocalDateTime localDateTime) {
+		ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("Asia/Seoul"));
+		return Date.from(zonedDateTime.toInstant());
+	}
+
+	public static Date toDate(Timestamp timestamp) {
+		return  new Date(timestamp.getTime());
 	}
 
 	public static String toString(LocalDateTime dateTime, String pattern) {
@@ -300,7 +318,7 @@ public final class DateUtils {
 	}
 
 	public static String toStrKorDateTime(String dateTimeStr, String pattern) {
-		LocalDateTime dateTime = toDateTime(dateTimeStr, pattern);
+		LocalDateTime dateTime = toLocalDateTime(dateTimeStr, pattern);
 		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(KOR_DATE_TIME_PATTERN);
 		return dateTime.format(formatter);
 	}
@@ -315,7 +333,7 @@ public final class DateUtils {
 	}
 
 	public static String toStrKorDate(String dateStr, String pattern) {
-		LocalDateTime dateTime = toDateTime(dateStr, pattern);
+		LocalDateTime dateTime = toLocalDateTime(dateStr, pattern);
 		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(KOR_DATE_PATTERN);
 		return dateTime.format(formatter);
 	}
