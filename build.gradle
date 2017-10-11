@@ -117,7 +117,7 @@ uploadArchives {
 			}
 			pom.groupId = 'io.geronimo'
 			pom.artifactId = 'geronimo-utils'
-			pom.version = '1.0.1'
+			pom.version = JAR_VERSION
 
 			/*pom.project {
 				parent {
