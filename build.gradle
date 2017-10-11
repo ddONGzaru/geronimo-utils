@@ -1,15 +1,21 @@
+/*
+  ------------------------------
+	 build script
+  ------------------------------
+*/
 buildscript {
 	ext {
-		springBootVersion = SPRING_BOOT_VER
+		//SPRING_BOOT_VER = '1.5.2.RELEASE'
 	}
 	repositories {
-		maven { url "https://plugins.gradle.org/m2/" }
-		jcenter()
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
 	}
 	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${SPRING_BOOT_VER}")
-		classpath("gradle.plugin.com.boxfuse.client:flyway-release:4.0.3")
-		classpath("io.franzbecker:gradle-lombok:1.8")
+		classpath "org.springframework.boot:spring-boot-gradle-plugin:1.5.7.RELEASE"
+		classpath "gradle.plugin.com.boxfuse.client:flyway-release:4.2.0"
+		classpath "io.franzbecker:gradle-lombok:1.10"
 	}
 }
 
@@ -23,6 +29,18 @@ allprojects {
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'org.flywaydb.flyway'
 	apply plugin: 'io.franzbecker.gradle-lombok'
+
+	idea {
+		module {
+			outputDir file('build/classes/main')
+			testOutputDir file('build/classes/test')
+		}
+	}
+	if(project.convention.findPlugin(JavaPluginConvention)) {
+		// Change the output directory for the main and test source sets back to the old path
+		sourceSets.main.output.classesDir = new File(buildDir, "classes/main")
+		sourceSets.test.output.classesDir = new File(buildDir, "classes/test")
+	}
 
 	/* _____ repo config _____ */
 	repositories {

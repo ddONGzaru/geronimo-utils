@@ -1,7 +1,5 @@
 package io.geronimo;
 
-import lombok.experimental.UtilityClass;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -15,7 +13,6 @@ import java.util.regex.Pattern;
  * @author tw.jang
  * @since 1.0.0
  */
-@UtilityClass
 public final class NumberUtils {
 	
 	/** #,##0.0 */

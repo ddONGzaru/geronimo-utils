@@ -15,14 +15,13 @@
  */
 package io.geronimo;
 
-import lombok.experimental.UtilityClass;
-import org.apache.commons.lang3.StringUtils;
-
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * JSR-310을 사용하여 날짜, 시간 및 요일 계산, 유효성 체크와 포맷 변경 등의 기능을 제공한다.
@@ -30,65 +29,16 @@ import java.util.Locale;
  * @author tw.jang
  * @since 1.0.0
  */
-@UtilityClass
+
 public final class DateUtils {
 	
-	public static final int HOURS_24 = 24;
-	
-	public static final int MINUTES_60 = 60;
-	
-	public static final int SECONDS_60 = 60;
-
-	public static final int MILLI_SECONDS_1000 = 1000;
-	
-	private static final int UNIT_HEX = 16;
-
-	/** Date pattern */
-	public static final String DATE_PATTERN_DASH = "yyyy-MM-dd";
-
-	/** Time pattern */
-	public static final String TIME_PATTERN = "HH:mm";
-
-	/** Date Time pattern */
-	public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
-
-	/** Date Time pattern */
-	public static final String KOR_DATE_TIME_PATTERN = "yyyy년MM월dd일 HH시mm분ss초";
-
-	/** Date Time pattern */
-	public static final String KOR_DATE_PATTERN = "yyyy년MM월dd일";
-
-	/** Date HMS pattern */
-	public static final String DATE_HMS_PATTERN = "yyyyMMddHHmmss";
-
-	/** Time stamp pattern */
-	public static final String TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
-
-	/** year pattern (yyyy)*/
-    public static final String YEAR_PATTERN = "yyyy";
-
-    /** month pattern (MM) */
-    public static final String MONTH_PATTERN = "MM";
-
-    /** day pattern (dd) */
-    public static final String DAY_PATTERN = "dd";
-
-    /** date pattern (yyyyMMdd) */
-    public static final String DATE_PATTERN = "yyyyMMdd";
-
-    /** hour, minute, second pattern (HHmmss) */
-    public static final String TIME_HMS_PATTERN = "HHmmss";
-
-    /** hour, minute, second pattern (HH:mm:ss) */
-    public static final String TIME_HMS_PATTERN_COLONE = "HH:mm:ss";
-
 	/**
 	 * 현재 날짜, 시간을 조회하여 문자열 형태로 반환한다.<br>
 	 *
 	 * @return (yyyy-MM-dd HH:mm:ss) 포맷으로 구성된 현재 날짜와 시간
 	 */
 	public static String now() {
-		return now(DATE_TIME_PATTERN);
+		return now(Pattern.DATE_TIME);
 	}
 
 	/**
@@ -100,9 +50,9 @@ public final class DateUtils {
 	 * @param pattern 날짜 및 시간에 대한 포맷
 	 * @return patter 포맷 형태로 구성된 현재 날짜와 시간
 	 */
-	public static String now(String pattern) {
+	public static String now(Pattern pattern) {
 		LocalDateTime dateTime = LocalDateTime.now();
-		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(pattern);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern.getFormatter());
 		return dateTime.format(formatter);
 	}
 
@@ -117,9 +67,9 @@ public final class DateUtils {
 	 * @param pattern 날짜 포맷
 	 * @return 두 날짜 사이의 일자
 	 */
-	public static int getDays(String startDate, String endDate, String pattern) {
+	public static int getDays(String startDate, String endDate, Pattern pattern) {
 
-		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(pattern);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern.getFormatter());
 
 		LocalDate localStartDate = LocalDate.parse(startDate, formatter);
 		LocalDate localEndDate = LocalDate.parse(endDate, formatter);
@@ -137,7 +87,7 @@ public final class DateUtils {
 	 * @return 두 날짜 사이의 일자
 	 */
 	public static int getDays(String startDate, String endDate) {
-		return getDays(startDate, endDate, DATE_PATTERN_DASH);
+		return getDays(startDate, endDate, Pattern.DATE);
 	}
 
 	public static int getDays(LocalDate startDate, LocalDate endDate) {
@@ -171,7 +121,7 @@ public final class DateUtils {
 	 * @return 일치하면 true를 그렇지않으면 false를 반환
 	 */
 	public static boolean equals(LocalDate date, String dateStr) {
-		return equals(date, dateStr, DATE_PATTERN_DASH);
+		return equals(date, dateStr, Pattern.DATE);
 	}
 
 	/**
@@ -184,9 +134,9 @@ public final class DateUtils {
 	 * @param pattern 날짜 포맷
 	 * @return 입력받은 두 일자가 같으면 true를 그렇지않으면 false를 반환.
 	 */
-	public static boolean equals(LocalDate date, String dateStr, String pattern) {
+	public static boolean equals(LocalDate date, String dateStr, Pattern pattern) {
 
-		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(pattern);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern.getFormatter());
 		LocalDate parsedDate = LocalDate.parse(dateStr, formatter);
 
 		return equals(date, parsedDate);
@@ -212,151 +162,176 @@ public final class DateUtils {
     	return LocalDate.of(year, 1, 1).isLeapYear();
     }
     
-	public static LocalDateTime toLocalDateTime(String dateTime, String pattern) {
+	public static LocalDateTime toLocalDateTime(String dateTime, Pattern pattern) {
 
 		if (StringUtils.isEmpty(dateTime)) {
 			return null;
 		}
 
-		if (dateTime.length() == 8) {
-			return DateUtils.toLocalDate(dateTime, "yyyyMMdd").atTime(0, 0, 0);
+		switch (pattern) {
+
+			case DATE_FLAT:
+				return DateUtils.toLocalDate(dateTime, Pattern.DATE_FLAT).atTime(0, 0, 0);
+
+			case DATE:
+				return DateUtils.toLocalDate(dateTime, Pattern.DATE).atTime(0, 0, 0);
+
+			case DATE_SLASH:
+				return DateUtils.toLocalDate(dateTime, Pattern.DATE_SLASH).atTime(0, 0, 0);
+
+			case DATE_KR:
+				return DateUtils.toLocalDate(dateTime, Pattern.DATE_KR).atTime(0, 0, 0);
 		}
 
-		if (dateTime.length() == 10) {
-			return DateUtils.toLocalDate(dateTime).atTime(0, 0, 0);
-		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern.getFormatter());
 
-		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(pattern);
 		return LocalDateTime.parse(dateTime, formatter);
 	}
 
 	public static LocalDateTime toLocalDateTime(String dateTime) {
-		return toLocalDateTime(dateTime, DATE_TIME_PATTERN);
+		return toLocalDateTime(dateTime, Pattern.DATE);
 	}
 
 	public static LocalDateTime toLocalDateTime(long timeMillis) {
-		Date date = new Date(timeMillis);
-		return date.toInstant().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+		return LocalDateTime.ofInstant(Instant.ofEpochMilli(timeMillis), ZoneId.systemDefault());
 	}
 
-	public static Timestamp toTimestamp(String dateTime, String pattern) {
+	public static LocalDateTime toLocalDateTime(long timeMillis, ZoneId zoneId) {
+		return LocalDateTime.ofInstant(Instant.ofEpochMilli(timeMillis), zoneId);
+	}
+
+	public static LocalDate toLocalDate(String date, Pattern pattern) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern.getFormatter());
+		return LocalDate.parse(date, formatter);
+	}
+
+	public static LocalDate toLocalDate(String date) {
+		return toLocalDate(date, Pattern.DATE);
+	}
+
+	public static Timestamp toTimestamp(String dateTime, Pattern pattern) {
 		return Timestamp.valueOf(toLocalDateTime(dateTime, pattern));
 	}
 
 	public static Timestamp toTimestamp(String dateTime) {
-		return Timestamp.valueOf(toLocalDateTime(dateTime, DATE_TIME_PATTERN));
+		return Timestamp.valueOf(toLocalDateTime(dateTime, Pattern.DATE_TIME));
 	}
 
 	public static Timestamp toTimestamp(long timeMillis) {
 		return Timestamp.valueOf(toLocalDateTime(timeMillis));
 	}
 
-	public static LocalDate toLocalDate(String date, String pattern) {
-		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(pattern);
-		return LocalDate.parse(date, formatter);
-	}
+	public static Date toDate(String dateTime, Pattern pattern) {
+		SimpleDateFormat sdf = new SimpleDateFormat(pattern.getFormatter());
 
-	public static LocalDate toLocalDate(String date) {
-		return toLocalDate(date, DATE_PATTERN_DASH);
-	}
+		Date date = null;
 
-	public static Date toDate(String dateTime, String pattern) {
-		ZonedDateTime zonedDateTime = toLocalDateTime(dateTime, pattern).atZone(ZoneId.of("Asia/Seoul"));
-		return Date.from(zonedDateTime.toInstant());
+		try {
+			date = sdf.parse(dateTime);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		return date;
 	}
 
 	public static Date toDate(String dateTime) {
-    	return toDate(dateTime, DATE_TIME_PATTERN);
+    	return toDate(dateTime, Pattern.DATE_TIME);
 	}
 
 	public static Date toDate(LocalDateTime localDateTime) {
-		ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("Asia/Seoul"));
+		return toDate(localDateTime, ZoneId.systemDefault());
+	}
+
+	public static Date toDate(LocalDateTime localDateTime, ZoneId zoneId) {
+		ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId);
 		return Date.from(zonedDateTime.toInstant());
 	}
 
 	public static Date toDate(Timestamp timestamp) {
-		return  new Date(timestamp.getTime());
+		return new Date(timestamp.getTime());
 	}
 
-	public static String toString(LocalDateTime dateTime, String pattern) {
-		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(pattern);
+	public static long toMillis(LocalDateTime dateTime, ZoneId zoneId) {
+		ZonedDateTime zdt = dateTime.atZone(zoneId);
+		return zdt.toInstant().toEpochMilli();
+	}
+
+	public static long toMillis(LocalDateTime dateTime) {
+		ZonedDateTime zdt = dateTime.atZone(ZoneId.systemDefault());
+		return zdt.toInstant().toEpochMilli();
+	}
+
+	public static long toMillis(String dateTime) {
+		return toTimestamp(dateTime).getTime();
+	}
+
+	public static long toMillis(String dateTime, Pattern pattern) {
+		return toTimestamp(dateTime, pattern).getTime();
+	}
+
+	public static String toString(LocalDateTime dateTime, Pattern pattern) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern.getFormatter());
 		return dateTime.format(formatter);
 	}
 
 	public static String toString(LocalDateTime dateTime) {
-		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
-		return dateTime.format(formatter);
+		return toString(dateTime, Pattern.DATE_TIME);
 	}
 
-	public static String toString(LocalDate date, String pattern) {
-		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(pattern);
+	public static String toString(Timestamp dateTime, Pattern pattern) {
+		return toString(dateTime.toLocalDateTime(), pattern);
+	}
+
+	public static String toString(Timestamp timestamp) {
+		return toString(timestamp.toLocalDateTime());
+	}
+
+	public static String toString(LocalDate date, Pattern pattern) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern.getFormatter());
 		return date.format(formatter);
 	}
 
 	public static String toString(LocalDate date) {
-		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(DATE_PATTERN_DASH);
-		return date.format(formatter);
+		return toString(date, Pattern.DATE);
 	}
 
-	public static String toString(LocalTime time, String pattern) {
-		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(pattern);
+	public static String toString(LocalTime time, Pattern pattern) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern.getFormatter());
 		return time.format(formatter);
 	}
 
 	public static String toString(LocalTime time) {
-		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(TIME_HMS_PATTERN_COLONE);
-		return time.format(formatter);
+		return toString(time, Pattern.TIME);
 	}
 
-	public static String toStrKorDateTime(LocalDateTime dateTime) {
-		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(KOR_DATE_TIME_PATTERN);
-		return dateTime.format(formatter);
-	}
+	public enum Pattern {
 
-	public static String toStrKorDateTime(String dateTimeStr) {
-		return toStrKorDateTime(dateTimeStr, DATE_TIME_PATTERN);
-	}
+		TIMESTAMP("yyyy-MM-dd HH:mm:ss.SSS"),
 
-	public static String toStrKorDateTime(String dateTimeStr, String pattern) {
-		LocalDateTime dateTime = toLocalDateTime(dateTimeStr, pattern);
-		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(KOR_DATE_TIME_PATTERN);
-		return dateTime.format(formatter);
-	}
+		DATE_TIME("yyyy-MM-dd HH:mm:ss"),
+		DATE_TIME_FLAT("yyyyMMddHHmmss"),
+		DATE_TIME_KR("yyyy년MM월dd일 HH시mm분ss초"),
 
-	public static String toStrKorDate(LocalDateTime dateTime) {
-		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(KOR_DATE_PATTERN);
-		return dateTime.format(formatter);
-	}
+		DATE("yyyy-MM-dd"),
+		DATE_FLAT("yyyyMMdd"),
+		DATE_SLASH("yyyy/MM/dd"),
+		DATE_KR("yyyy년MM월dd일"),
 
-	public static String toStrKorDate(String dateStr) {
-		return toStrKorDate(dateStr, DATE_PATTERN_DASH);
-	}
+		TIME("HH:mm:ss"),
+		TIME_FLAT("HHmmss");
 
-	public static String toStrKorDate(String dateStr, String pattern) {
-		LocalDateTime dateTime = toLocalDateTime(dateStr, pattern);
-		java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern(KOR_DATE_PATTERN);
-		return dateTime.format(formatter);
-	}
+		private final String formatter;
 
-	public static long toTimeMillis(LocalDateTime dateTime) {
-		ZonedDateTime zdt = dateTime.atZone(ZoneId.of("Asia/Seoul"));
-		return zdt.toInstant().toEpochMilli();
-	}
-
-	public static String dateFormatFromLocale(Locale locale) {
-		if (locale.equals(Locale.US)) {
-			return "mm/dd/yyyy";
+		Pattern(String formatter) {
+			this.formatter = formatter;
 		}
 
-		return "yyyy-MM-dd";
+		public String getFormatter() {
+			return formatter;
+		}
 	}
 
-	public static String timeFormatFromLocale(Locale locale) {
-		return "HH:mm:ss";
-	}
 
-	public static String dateTimeFormatFromLocale(Locale locale) {
-		return dateFormatFromLocale(locale) + " " + timeFormatFromLocale(locale);
-	}
 
 }

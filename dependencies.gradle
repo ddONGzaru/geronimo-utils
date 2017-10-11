@@ -23,8 +23,8 @@ dependencies {
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.8'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.8.8'
 
-    //___ compileOnly ___
-    compileOnly 'org.projectlombok:lombok'
+    // lombok
+    compile 'org.projectlombok:lombok:1.16.18'
 
     //___ testCompile ___
     testCompile 'org.springframework.boot:spring-boot-starter-test'
