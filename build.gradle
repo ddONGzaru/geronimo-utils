@@ -105,7 +105,7 @@ task sourcesJar(type: Jar) {
 
 jar {
 	baseName = 'geronimo-utils'
-	version = JAR_VERSION
+	version = APP_VERSION
 	dependsOn sourcesJar
 }
 
@@ -117,7 +117,7 @@ uploadArchives {
 			}
 			pom.groupId = 'io.geronimo'
 			pom.artifactId = 'geronimo-utils'
-			pom.version = JAR_VERSION
+			pom.version = APP_VERSION
 
 			/*pom.project {
 				parent {

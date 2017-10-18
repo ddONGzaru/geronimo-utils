@@ -311,7 +311,10 @@ public final class DateUtils {
 
 		DATE_TIME("yyyy-MM-dd HH:mm:ss"),
 		DATE_TIME_FLAT("yyyyMMddHHmmss"),
+		DATE_TIME_MM("yyyy-MM-dd HH:mm"),
+		DATE_TIME_MM_FLAT("yyyyMMddHHmm"),
 		DATE_TIME_KR("yyyy년MM월dd일 HH시mm분ss초"),
+		DATE_TIME_KR_MM("yyyy년MM월dd일 HH시mm분"),
 
 		DATE("yyyy-MM-dd"),
 		DATE_FLAT("yyyyMMdd"),
@@ -319,7 +322,9 @@ public final class DateUtils {
 		DATE_KR("yyyy년MM월dd일"),
 
 		TIME("HH:mm:ss"),
-		TIME_FLAT("HHmmss");
+		TIME_FLAT("HHmmss"),
+		TIME_MM("HH:mm"),
+		TIME_MM_FLAT("HHmm");
 
 		private final String formatter;
 
