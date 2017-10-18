@@ -13,15 +13,19 @@ dependencies {
     // spring boot
     compile 'org.springframework.boot:spring-boot-starter'
 
-    //commons
+    // apache commons
+    compile 'org.apache.commons:commons-lang3:3.6'
     compile 'commons-codec:commons-codec:1.10'
     compile 'commons-io:commons-io:2.5'
     compile 'commons-net:commons-net:3.6'
-    compile 'org.apache.commons:commons-lang3:3.5'
 
     // jackson-datatype
-    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.8'
-    compile 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.8.8'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.2'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.9.2'
+
+    // model-mapper
+    compile 'org.modelmapper:modelmapper:1.1.1'
+    compile 'net.rakugakibox.spring.boot:orika-spring-boot-starter:1.5.0'
 
     // lombok
     compile 'org.projectlombok:lombok:1.16.18'
