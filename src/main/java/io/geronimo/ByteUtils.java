@@ -28,9 +28,9 @@ public final class ByteUtils {
 	 * <p>두 배열의 값이 동일한지 비교한다.</p>
 	 * 
 	 * <pre>
-	 * ArrayUtils.equals(null, null)                        = true
-	 * ArrayUtils.equals(["one", "two"], ["one", "two"])    = true
-	 * ArrayUtils.equals(["one", "two"], ["three", "four"]) = false
+	 * CollectionUtils.equals(null, null)                        = true
+	 * CollectionUtils.equals(["one", "two"], ["one", "two"])    = true
+	 * CollectionUtils.equals(["one", "two"], ["three", "four"]) = false
 	 * </pre>
 	 * 
 	 * @param array1 비교할 byte배열 대상 1
