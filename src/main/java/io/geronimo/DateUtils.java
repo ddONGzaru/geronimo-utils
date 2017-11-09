@@ -337,6 +337,37 @@ public final class DateUtils {
 		}
 	}
 
+	public static Date addYears(Date date, int amount) {
+    	return org.apache.commons.lang3.time.DateUtils.addYears(date, amount);
+	}
 
+	public static Date addMonths(Date date, int amount) {
+    	return org.apache.commons.lang3.time.DateUtils.addMonths(date, amount);
+	}
+
+	public static Date addWeeks(final Date date, final int amount) {
+
+		return org.apache.commons.lang3.time.DateUtils.addWeeks(date, amount);
+	}
+
+	public static Date addDays(Date date, int amount) {
+		return org.apache.commons.lang3.time.DateUtils.addDays(date, amount);
+	}
+
+	public static Date addHours(final Date date, final int amount) {
+		return org.apache.commons.lang3.time.DateUtils.addHours(date, amount);
+	}
+
+	public static Date addMinutes(final Date date, final int amount) {
+		return org.apache.commons.lang3.time.DateUtils.addMinutes(date, amount);
+	}
+
+	public static Date addSeconds(final Date date, final int amount) {
+		return org.apache.commons.lang3.time.DateUtils.addSeconds(date, amount);
+	}
+
+	public static Date addMilliseconds(final Date date, final int amount) {
+		return org.apache.commons.lang3.time.DateUtils.addMilliseconds(date, amount);
+	}
 
 }
