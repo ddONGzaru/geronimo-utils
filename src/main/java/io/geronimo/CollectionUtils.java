@@ -1,9 +1,12 @@
 package io.geronimo;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@UtilityClass
 public class CollectionUtils {
 
     public static boolean isEmpty(Collection<?> collection) {

@@ -15,6 +15,7 @@
  */
 package io.geronimo;
 
+import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.CharUtils;
 
 import java.util.*;
@@ -28,9 +29,8 @@ import java.util.regex.Pattern;
  * @author tw.jang
  * @since 1.0.0
  */
+@UtilityClass
 public final class StringUtils {
-	
-	private StringUtils() { }
 	
 	public static final String DEFAULT_EMPTY_STRING = "";
 

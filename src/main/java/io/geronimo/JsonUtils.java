@@ -18,7 +18,7 @@ import java.util.Map;
 
 @Slf4j
 @UtilityClass
-public class JsonUtils {
+public final class JsonUtils {
 
     private static ObjectMapper mapper;
 

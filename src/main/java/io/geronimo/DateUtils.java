@@ -15,6 +15,8 @@
  */
 package io.geronimo;
 
+import lombok.experimental.UtilityClass;
+
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,7 +31,7 @@ import java.util.Date;
  * @author tw.jang
  * @since 1.0.0
  */
-
+@UtilityClass
 public final class DateUtils {
 	
 	/**
