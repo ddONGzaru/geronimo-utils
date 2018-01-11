@@ -285,6 +285,14 @@ public final class DateUtils {
 		return toString(dateTime.toLocalDateTime(), pattern);
 	}
 
+	public static String toString(Date date, Pattern pattern) {
+		return toString(LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()), pattern);
+	}
+
+	public static String toString(Date date) {
+		return toString(date, Pattern.DATE_TIME);
+	}
+
 	public static String toString(Timestamp timestamp) {
 		return toString(timestamp.toLocalDateTime());
 	}

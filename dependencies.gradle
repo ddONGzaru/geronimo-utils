@@ -14,7 +14,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter'
 
     // apache commons
-    compile 'org.apache.commons:commons-lang3:3.6'
+    compile 'org.apache.commons:commons-lang3:3.7'
     compile 'commons-codec:commons-codec:1.10'
     compile 'commons-io:commons-io:2.5'
     compile 'commons-net:commons-net:3.6'
