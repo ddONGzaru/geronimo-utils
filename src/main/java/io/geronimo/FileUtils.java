@@ -15,6 +15,7 @@
  */
 package io.geronimo;
 
+import lombok.Cleanup;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.UtilityClass;
@@ -2096,34 +2097,37 @@ public final class FileUtils {
      * @param targetFiles ZipFile 대상
      * @return 성공하면 enum 타입의 Result.SUCCESS를 그렇지 않으면 Result.FAIL을 반환
      */
-    public static Result makeZipFile( String zipFile, String[] targetFiles){
+    public static Result makeZipFile(String zipFile, List<String> targetFiles) {
 
         byte[] buffer = new byte[1024];
+
         try{
-            if (targetFiles != null && targetFiles.length > 0) {
 
-                FileOutputStream fos = new FileOutputStream( zipFile);
-                ZipOutputStream zos = new ZipOutputStream(fos);
+        	if (CollectionUtils.isNotEmpty(targetFiles)) {
 
-                for ( String path : targetFiles){
-                    File srcFile = new File( path);
+        		@Cleanup FileOutputStream fos = new FileOutputStream( zipFile);
+				@Cleanup ZipOutputStream zos = new ZipOutputStream(fos);
 
-                    if (notExistsFile(srcFile)) {
-                        return buildFailResult(srcFile.getName() + "가 존재하지 않습니다.");
-                    }
+				for (String path : targetFiles) {
 
-                    FileInputStream fis = new FileInputStream(srcFile);
-                    zos.putNextEntry(new ZipEntry( srcFile.getName()));
+					File srcFile = new File( path);
 
-                    int len;
-                    while ((len = fis.read(buffer)) > 0) {
-                        zos.write(buffer, 0, len);
-                    }
+					if (notExistsFile(srcFile)) {
+						return buildFailResult(srcFile.getName() + "가 존재하지 않습니다.");
+					}
 
-                    zos.closeEntry();
-                    fis.close();
-                }
-                zos.close();
+					FileInputStream fis = new FileInputStream(srcFile);
+					zos.putNextEntry(new ZipEntry( srcFile.getName()));
+
+					int len;
+					while ((len = fis.read(buffer)) > 0) {
+						zos.write(buffer, 0, len);
+					}
+
+					zos.closeEntry();
+					fis.close();
+				}
+				zos.close();
 
             } else {
                 buildFailResult("FILE 이 없습니다.");
